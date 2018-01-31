@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas绘制矿图</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="left-content">
+            <div class="mother-grid-inner">
+                <div class="inner-blockChart">
+                    <div>
+                        <div class="col-md-6">
+                            <form class="form-horizontal">
+                                <fieldset>
+                                    <div id="demo" class="geo-chart1">
+                                    </div>
+                                    <div>
+                                        <input type="button" name="" value="随机定位" id="position" />
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                            <div class="clearfix">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="geo-chart2" id="main" style="position: relative">
+                                <div style="position: absolute; right: 20px">
+                                    <div class="geo-type">
+                                        <a href="javascript:;" onclick="showProfile()" title="剖面图"><span class="span-profile fa fa-cube "></span></a>
+                                    </div>
+                                    <div class="geo-type">
+                                        <a href="javascript:;" onclick="showAll()" title="平面剖面图"><span class="span-profile fa fa-clone "></span></a>
+                                    </div>
+                                    <div class="geo-type">
+                                        <a href="javascript:;" onclick="showPlane()" title="平面图"><span class="span-plane fa fa-square-o"></span></a>
+                                    </div>
+                                </div>
+                                <div class="geo-plane" id="CadCanvas">
+                                </div>
+                                <div class="geo-profile" id="CadProfile">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="clearfix">
+                        </div>
+                        <div style="bottom: 0; opacity: 1; margin-bottom: 1em; text-align: center;">
+                            &nbsp;&nbsp;<span id="spanx" style="font: 15px '微软雅黑'; color: black">X = 0</span>&nbsp;&nbsp;
+                                    <span id="spany" style="font: 15px '微软雅黑'; color: black">Y = 0</span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="clearfix">
+                </div>
+                <div class="copyrights">
+                    <p>
+                        Copyright &copy; 2018. <a href="http://www.wuyandong.me">wuyandong.me</a> All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix">
+        </div>
+    </div>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/akxy-js/akxy-canvas.js"></script>
+    <script type="text/javascript" src="js/akxy-js/heatmap.js"></script>
+    <script>
+        //加载左侧Cad矿图
+        var cadInfo, stressInfo, demoLayer, middleX, middleY;
+        var pointSize = {
+            stress: 4,
+            support: 2,
+            quake: 6,
+            sound: 2
+        };
+        var demoDiv = document.getElementById("demo");
+
+        $.ajax({ //请求矿图信息
+            type: "GET",
+            url: "yangcheng.json",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                cadInfo = data;
+                var config = {
+                    container: demoDiv,
+                    pointSize: pointSize
+                };
+                akxyCad.config(config);
+                akxyCad.loadCad(cadInfo);
+
+                demoLayer = akxyCad.getLayer();
+                middleX = akxyCad.getmiddleX();
+                middleY = akxyCad.getmiddleY();
+
+                var quakeInfo = [{ "OccurrenceTime": "2017-06-22 02:50:58", "X": 11636.6, "Y": 10394.3, "Z": -810.6, "ShowEnergy": "7.1E3", "Energy": 7092.743652, "AreaId": "21" }, { "OccurrenceTime": "2017-06-21 22:35:21", "X": 11545.8, "Y": 10468.2, "Z": -766.5, "ShowEnergy": "5.8E3", "Energy": 5825.10498, "AreaId": "21" }, { "OccurrenceTime": "2017-06-22 01:25:47", "X": 9347.3, "Y": 10023.7, "Z": -463.4, "ShowEnergy": "2.6E3", "Energy": 2555.827881, "AreaId": "22" }, { "OccurrenceTime": "2017-06-22 00:42:04", "X": 11658.5, "Y": 10429.8, "Z": -768.8, "ShowEnergy": "2.3E3", "Energy": 2286.827393, "AreaId": "21" }, { "OccurrenceTime": "2017-06-22 01:36:17", "X": 9425.7, "Y": 10216.7, "Z": -395.4, "ShowEnergy": "1.9E3", "Energy": 1906.799072, "AreaId": "22" }, { "OccurrenceTime": "2017-06-22 02:19:00", "X": 11584.8, "Y": 10396.8, "Z": -802.3, "ShowEnergy": "1.4E3", "Energy": 1409.334595, "AreaId": "21" }, { "OccurrenceTime": "2017-06-22 01:27:42", "X": 9671.3, "Y": 9605.6, "Z": -514.2, "ShowEnergy": "9.5E2", "Energy": 952.628906, "AreaId": "23" }, { "OccurrenceTime": "2017-06-21 23:40:09", "X": 11636.1, "Y": 10452.7, "Z": -825.1, "ShowEnergy": "8.6E2", "Energy": 864.157227, "AreaId": "21" }, { "OccurrenceTime": "2017-06-22 02:41:45", "X": 9288.2, "Y": 10058, "Z": -457.6, "ShowEnergy": "8.1E2", "Energy": 812.073975, "AreaId": "22" }, { "OccurrenceTime": "2017-06-21 21:55:21", "X": 11618, "Y": 10514.8, "Z": -763.5, "ShowEnergy": "5.4E2", "Energy": 538.64386, "AreaId": "21" }, { "OccurrenceTime": "2017-06-22 01:35:35", "X": 9470.1, "Y": 10202.9, "Z": -435.4, "ShowEnergy": "5.0E2", "Energy": 495.1828, "AreaId": "22" }, { "OccurrenceTime": "2017-06-21 23:44:03", "X": 11400, "Y": 10412.9, "Z": -742, "ShowEnergy": "4.3E2", "Energy": 426.029236, "AreaId": "21" }, { "OccurrenceTime": "2017-06-22 01:31:14", "X": 11600.4, "Y": 10416.6, "Z": -797.7, "ShowEnergy": "4.3E2", "Energy": 425.662354, "AreaId": "21" }, { "OccurrenceTime": "2017-06-22 01:29:32", "X": 9393.8, "Y": 10147.6, "Z": -495.5, "ShowEnergy": "3.6E2", "Energy": 364.546417, "AreaId": "22" }, { "OccurrenceTime": "2017-06-21 23:44:46", "X": 11435.9, "Y": 10332.6, "Z": -781.3, "ShowEnergy": "3.1E2", "Energy": 305.898743, "AreaId": "21" }, { "OccurrenceTime": "2017-06-21 23:25:26", "X": 9415.6, "Y": 10175.6, "Z": -504, "ShowEnergy": "2.5E2", "Energy": 253.305038, "AreaId": "22" }, { "OccurrenceTime": "2017-06-21 23:42:13", "X": 11674.5, "Y": 10418.3, "Z": -743.3, "ShowEnergy": "1.7E2", "Energy": 171.407761, "AreaId": "21" }, { "OccurrenceTime": "2017-06-22 00:30:39", "X": 9414.8, "Y": 10082.8, "Z": -488, "ShowEnergy": "1.0E2", "Energy": 102.849892, "AreaId": "22" }, { "OccurrenceTime": "2017-06-21 23:53:16", "X": 9270.6, "Y": 10337.6, "Z": -510.5, "ShowEnergy": "43.1", "Energy": 43.056995, "AreaId": "22" }, { "OccurrenceTime": "2017-06-21 23:13:38", "X": 11520.1, "Y": 10449.2, "Z": -766.1, "ShowEnergy": "38", "Energy": 38.008327, "AreaId": "21" }, { "OccurrenceTime": "2017-06-21 23:56:32", "X": 9479.2, "Y": 10326.6, "Z": -453.2, "ShowEnergy": "36.7", "Energy": 36.671703, "AreaId": "22" }, { "OccurrenceTime": "2017-06-22 01:45:34", "X": 9783.5, "Y": 9436.2, "Z": -530.3, "ShowEnergy": "19.5", "Energy": 19.491047, "AreaId": "23" }];
+                akxyCad.drawQuake(quakeInfo);
+                stressInfo = [{ "MPName": "第七组8米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "15.9", "ZFValue": "100.02%", "X": 11574.99805, "Y": 10357.84961, "Z": -848.5, "MPId": 100150, "AreaId": "21", "LevelInfo": "中等冲击,2", "Is": 0.618232966606092, "UpandDown": "1" }, { "MPName": "三角区皮顺1", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.83", "ZFValue": "16.65%", "X": 9878.070313, "Y": 9707.019531, "Z": 0, "MPId": 400174, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.218724975, "UpandDown": "0" }, { "MPName": "3#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.83", "ZFValue": "16.65%", "X": 9285.796875, "Y": 9186.811523, "Z": -465, "MPId": 400182, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.218724975, "UpandDown": "0" }, { "MPName": "第七组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.67", "ZFValue": "13.36%", "X": 11471.00586, "Y": 10439.24121, "Z": -744.5, "MPId": 100130, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.2125451625, "UpandDown": "0" }, { "MPName": "1#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.53", "ZFValue": "10.61%", "X": 9254.442383, "Y": 9147.864258, "Z": -463, "MPId": 400178, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.20739532499999996, "UpandDown": "0" }, { "MPName": "第九组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.46", "ZFValue": "9.15%", "X": 11443.76953, "Y": 10397.30859, "Z": -763.5, "MPId": 100134, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.2046487125, "UpandDown": "0" }, { "MPName": "第八组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.35", "ZFValue": "6.95%", "X": 11457.3877, "Y": 10418.27539, "Z": -745.799988, "MPId": 100132, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.20052884999999998, "UpandDown": "0" }, { "MPName": "第六组8米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.35", "ZFValue": "6.95%", "X": 11656.04492, "Y": 10474.96191, "Z": -813, "MPId": 100148, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.20052884999999998, "UpandDown": "1" }, { "MPName": "第八组14米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.97", "ZFValue": "19.4%", "X": 11541.83594, "Y": 10339.72266, "Z": -850.5, "MPId": 100153, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.19899983333333332, "UpandDown": "1" }, { "MPName": "第二组14米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.9", "ZFValue": "17.94%", "X": 11443.58496, "Y": 10364.08008, "Z": -781.200012, "MPId": 100121, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.19655843333333334, "UpandDown": "0" }, { "MPName": "第五组14米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "6.62", "ZFValue": "32.4%", "X": 11652.67188, "Y": 10505.17871, "Z": -813, "MPId": 100147, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.19133459750000004, "UpandDown": "1" }, { "MPName": "皮顺8#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.07", "ZFValue": "1.46%", "X": 9684.649414, "Y": 9472.227539, "Z": 0, "MPId": 400210, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.19022917499999997, "UpandDown": "1" }, { "MPName": "8#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.04", "ZFValue": "0.72%", "X": 9364.182617, "Y": 9284.179688, "Z": -470, "MPId": 400192, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.18885588749999999, "UpandDown": "0" }, { "MPName": "第九组8米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.01", "ZFValue": "0.17%", "X": 11542.15039, "Y": 10307.19434, "Z": -853, "MPId": 100154, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.18782591249999997, "UpandDown": "1" }, { "MPName": "第五组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5", "ZFValue": "-0.01%", "X": 11559.98926, "Y": 10575.98242, "Z": -716.599976, "MPId": 100126, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1874826, "UpandDown": "0" }, { "MPName": "皮顺8#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.56", "ZFValue": "11.16%", "X": 9681.636719, "Y": 9479.227539, "Z": 0, "MPId": 400211, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.18526689999999998, "UpandDown": "1" }, { "MPName": "三角区4", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.86", "ZFValue": "-2.76%", "X": 0, "Y": 0, "Z": 0, "MPId": 400167, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.18233276249999997, "UpandDown": "0" }, { "MPName": "第六组14米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.45", "ZFValue": "8.96%", "X": 11639.98145, "Y": 10483.00098, "Z": -813, "MPId": 100149, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1816048, "UpandDown": "1" }, { "MPName": "第二组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.82", "ZFValue": "-3.67%", "X": 11430.15234, "Y": 10376.34277, "Z": -785, "MPId": 100120, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.18061612500000002, "UpandDown": "0" }, { "MPName": "三角区7", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.79", "ZFValue": "-4.22%", "X": 9896.753906, "Y": 9718.694336, "Z": 0, "MPId": 400170, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.1795861875, "UpandDown": "0" }, { "MPName": "第一组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.79", "ZFValue": "-4.22%", "X": 11443.76953, "Y": 10397.30859, "Z": -783, "MPId": 100118, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1795861875, "UpandDown": "0" }, { "MPName": "8#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.36", "ZFValue": "7.13%", "X": 9369.108398, "Y": 9281.195313, "Z": -470, "MPId": 400193, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.17855303333333333, "UpandDown": "0" }, { "MPName": "第十组8米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.75", "ZFValue": "-4.95%", "X": 11525.72559, "Y": 10281.86621, "Z": -855, "MPId": 100156, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.17821286249999999, "UpandDown": "1" }, { "MPName": "第三组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.72", "ZFValue": "-5.5%", "X": 11416.34863, "Y": 10355.0918, "Z": -786, "MPId": 100122, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.177182925, "UpandDown": "0" }, { "MPName": "第一组8米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.71", "ZFValue": "-5.87%", "X": 11509.30176, "Y": 10256.53809, "Z": -857, "MPId": 100138, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1764962625, "UpandDown": "1" }, { "MPName": "第二组14米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.28", "ZFValue": "5.67%", "X": 11476.19238, "Y": 10238.22656, "Z": -859, "MPId": 100141, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.17611163333333335, "UpandDown": "1" }, { "MPName": "运煤巷1", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.68", "ZFValue": "-6.42%", "X": 9979.032227, "Y": 9714.742188, "Z": 0, "MPId": 400176, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.17546628749999998, "UpandDown": "0" }, { "MPName": "皮顺4#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.21", "ZFValue": "4.2%", "X": 9624.282227, "Y": 9374.319336, "Z": 0, "MPId": 400201, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.17367023333333334, "UpandDown": "1" }, { "MPName": "第九组14米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "5.16", "ZFValue": "3.1%", "X": 11525.42481, "Y": 10314.34863, "Z": -853, "MPId": 100155, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.17183916666666665, "UpandDown": "1" }, { "MPName": "第八组8米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.57", "ZFValue": "-8.62%", "X": 11558.57422, "Y": 10332.52246, "Z": -850.5, "MPId": 100152, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.171346425, "UpandDown": "1" }, { "MPName": "三角区皮顺2", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "5.07", "ZFValue": "1.46%", "X": 9874.839844, "Y": 9714.405273, "Z": 0, "MPId": 400175, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.16909259999999998, "UpandDown": "0" }, { "MPName": "第十组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.49", "ZFValue": "-10.26%", "X": 11457.3877, "Y": 10418.27539, "Z": -780, "MPId": 100136, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1682565375, "UpandDown": "0" }, { "MPName": "皮顺5#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.45", "ZFValue": "-11%", "X": 9644.088867, "Y": 9389.080078, "Z": 0, "MPId": 400202, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.1668832125, "UpandDown": "1" }, { "MPName": "皮顺7#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.45", "ZFValue": "-11%", "X": 9675.658203, "Y": 9427.728516, "Z": 0, "MPId": 400208, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.1668832125, "UpandDown": "1" }, { "MPName": "第二组8米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.41", "ZFValue": "-11.73%", "X": 11492.87793, "Y": 10231.20996, "Z": -859, "MPId": 100140, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.165509925, "UpandDown": "1" }, { "MPName": "第五组8米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.41", "ZFValue": "-11.73%", "X": 11668.90723, "Y": 10497.33789, "Z": -813, "MPId": 100146, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.165509925, "UpandDown": "1" }, { "MPName": "皮顺6#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.4", "ZFValue": "-11.91%", "X": 9659.873047, "Y": 9408.404297, "Z": 0, "MPId": 400204, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.16516661249999998, "UpandDown": "1" }, { "MPName": "第六组14米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.94", "ZFValue": "-1.29%", "X": 11559.63477, "Y": 10542.58301, "Z": -715.599976, "MPId": 100129, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.16451496666666665, "UpandDown": "0" }, { "MPName": "三角区8", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.92", "ZFValue": "-1.66%", "X": 9893.522461, "Y": 9726.018555, "Z": 0, "MPId": 400171, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.16390459999999998, "UpandDown": "0" }, { "MPName": "3#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.91", "ZFValue": "-1.84%", "X": 9291.035156, "Y": 9183.828125, "Z": -465, "MPId": 400183, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.16359943333333332, "UpandDown": "0" }, { "MPName": "第四组8米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.36", "ZFValue": "-12.83%", "X": 11573.71582, "Y": 10597.11523, "Z": -716.900024, "MPId": 100124, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1634500125, "UpandDown": "0" }, { "MPName": "皮顺2#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.34", "ZFValue": "-13.19%", "X": 9708, "Y": 9464, "Z": 0, "MPId": 400207, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.16276335, "UpandDown": "1" }, { "MPName": "第一组14米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.83", "ZFValue": "-3.49%", "X": 11492.60254, "Y": 10263.60059, "Z": -857, "MPId": 100139, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.16085286666666668, "UpandDown": "1" }, { "MPName": "第五组14米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.8", "ZFValue": "-4.04%", "X": 11573.36133, "Y": 10563.7168, "Z": -716.599976, "MPId": 100127, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.15993733333333332, "UpandDown": "0" }, { "MPName": "皮顺2#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "6.11", "ZFValue": "22.15%", "X": 9704, "Y": 9468, "Z": 0, "MPId": 400197, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.15718238819659422, "UpandDown": "1" }, { "MPName": "第一组14米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.64", "ZFValue": "-7.15%", "X": 11457.20313, "Y": 10385.0459, "Z": -763.5, "MPId": 100119, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.15474933333333332, "UpandDown": "0" }, { "MPName": "三角区5", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.08", "ZFValue": "-18.32%", "X": 9915.436523, "Y": 9730.370117, "Z": 0, "MPId": 400168, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.15315033749999998, "UpandDown": "0" }, { "MPName": "5#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.59", "ZFValue": "-8.25%", "X": 9322.264648, "Y": 9222.775391, "Z": -467, "MPId": 400187, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.1529183, "UpandDown": "0" }, { "MPName": "1#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "6.02", "ZFValue": "20.32%", "X": 9259.805664, "Y": 9144.880859, "Z": -462, "MPId": 400179, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.151051395, "UpandDown": "0" }, { "MPName": "第四组14米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "6.02", "ZFValue": "20.32%", "X": 11587.08691, "Y": 10584.85059, "Z": -716.900024, "MPId": 100125, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.151051395, "UpandDown": "0" }, { "MPName": "三角区6", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.5", "ZFValue": "-10.08%", "X": 9912.206055, "Y": 9737.631836, "Z": 0, "MPId": 400169, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.14986653333333333, "UpandDown": "0" }, { "MPName": "第七组14米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.49", "ZFValue": "-10.26%", "X": 11558.24707, "Y": 10365.09668, "Z": -848.5, "MPId": 100151, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.14956136666666667, "UpandDown": "1" }, { "MPName": "皮顺7#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.47", "ZFValue": "-10.63%", "X": 9671.636719, "Y": 9432.227539, "Z": 0, "MPId": 400209, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.148951, "UpandDown": "1" }, { "MPName": "6#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.96", "ZFValue": "-20.7%", "X": 9332.828125, "Y": 9245.232422, "Z": -468, "MPId": 400188, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.148687125, "UpandDown": "0" }, { "MPName": "2#切眼里21米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.46", "ZFValue": "-10.81%", "X": 11511.87305, "Y": 10473.92188, "Z": -774, "MPId": 100165, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1486458333333333, "UpandDown": "0" }, { "MPName": "皮顺5#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.43", "ZFValue": "-11.36%", "X": 9640.067383, "Y": 9393.643555, "Z": 0, "MPId": 400203, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.14773029999999998, "UpandDown": "1" }, { "MPName": "7#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.91", "ZFValue": "-21.8%", "X": 9348.505859, "Y": 9264.706055, "Z": -469, "MPId": 400190, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.14662717499999997, "UpandDown": "0" }, { "MPName": "第三组14米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "4.21", "ZFValue": "-15.76%", "X": 11429.7168, "Y": 10343.00781, "Z": -785.5, "MPId": 100123, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1404060666666667, "UpandDown": "0" }, { "MPName": "7#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "4.15", "ZFValue": "-17.04%", "X": 9353.494141, "Y": 9261.722656, "Z": -469, "MPId": 400191, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.13826983333333331, "UpandDown": "0" }, { "MPName": "皮顺1#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.67", "ZFValue": "-26.56%", "X": 9691, "Y": 9446, "Z": 0, "MPId": 400196, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.1377007875, "UpandDown": "1" }, { "MPName": "第八组14米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "3.99", "ZFValue": "-20.15%", "X": 11470.82129, "Y": 10406.01172, "Z": -745.799988, "MPId": 100133, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.13308186666666666, "UpandDown": "0" }, { "MPName": "第三组14米皮", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "3.99", "ZFValue": "-20.15%", "X": 11678.05371, "Y": 10549.53516, "Z": -811.799988, "MPId": 100143, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.13308186666666666, "UpandDown": "1" }, { "MPName": "皮顺3#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.44", "ZFValue": "-31.14%", "X": 9612.519531, "Y": 9350.431641, "Z": 0, "MPId": 400198, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.1291177125, "UpandDown": "1" }, { "MPName": "2#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.86", "ZFValue": "-22.71%", "X": 9275.419922, "Y": 9164.354492, "Z": -463, "MPId": 400181, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.12880940000000002, "UpandDown": "0" }, { "MPName": "皮顺6#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.86", "ZFValue": "-22.9%", "X": 9655.852539, "Y": 9412.967773, "Z": 0, "MPId": 400205, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.12850423333333333, "UpandDown": "1" }, { "MPName": "5#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.25", "ZFValue": "-34.98%", "X": 9317.151367, "Y": 9225.758789, "Z": -467, "MPId": 400186, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.12190796249999997, "UpandDown": "0" }, { "MPName": "皮顺1#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.64", "ZFValue": "-27.11%", "X": 9687, "Y": 9450, "Z": 0, "MPId": 400206, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.12148516666666667, "UpandDown": "1" }, { "MPName": "皮顺4#8米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.11", "ZFValue": "-37.73%", "X": 9628.303711, "Y": 9369.755859, "Z": 0, "MPId": 400200, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.11675812499999999, "UpandDown": "1" }, { "MPName": "三角区1", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "3.44", "ZFValue": "-31.14%", "X": 9920.932617, "Y": 9713.400391, "Z": -515, "MPId": 400164, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.11477129999999999, "UpandDown": "0" }, { "MPName": "2#切眼里20米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "3.02", "ZFValue": "-39.56%", "X": 11504.62695, "Y": 10457.17285, "Z": -774, "MPId": 100164, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.1133248875, "UpandDown": "0" }, { "MPName": "三角区2", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "2.84", "ZFValue": "-43.22%", "X": 9922.929688, "Y": 9713.052734, "Z": -512, "MPId": 400165, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.10645841250000002, "UpandDown": "0" }, { "MPName": "第七组14米", "AcquisitionTime": "2017-08-04 01:59:47", "PValue": "3.12", "ZFValue": "-37.55%", "X": 11484.43945, "Y": 10426.97754, "Z": -744.5, "MPId": 100131, "AreaId": "21", "LevelInfo": "未发现异常,0", "Is": 0.10409016666666665, "UpandDown": "0" }, { "MPName": "皮顺3#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "2.84", "ZFValue": "-43.22%", "X": 9608.498047, "Y": 9354.995117, "Z": 0, "MPId": 400199, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.09462970000000001, "UpandDown": "1" }, { "MPName": "运煤巷2", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "1.58", "ZFValue": "-68.31%", "X": 9980.032227, "Y": 9720.742188, "Z": 0, "MPId": 400177, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.05282063333333334, "UpandDown": "0" }, { "MPName": "三角区3", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "0.74", "ZFValue": "-85.15%", "X": 9926.15625, "Y": 9709.777344, "Z": -512, "MPId": 400166, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.024744466666666687, "UpandDown": "0" }, { "MPName": "6#14米", "AcquisitionTime": "2017-06-22 02:59:47", "PValue": "0.55", "ZFValue": "-89%", "X": 9337.878906, "Y": 9242.249023, "Z": -468, "MPId": 400189, "AreaId": "23", "LevelInfo": "未发现异常,0", "Is": 0.018335766666666642, "UpandDown": "0" }];
+                akxyCad.drawStress(stressInfo);
+                $.ajax({ //请求矿图信息
+                    type: "GET",
+                    url: "drillbit.json",
+                    dataType: "json",
+                    success: function (data) {
+                        akxyCad.setLayer(demoLayer); //设置当前矿图的Layer对象
+                        akxyCad.drawDrillBit(data);
+                    }
+                })
+
+                //加载预警特效。
+                //PS: 如果页面仅仅只加载一次矿图可以使用类库中封装好的特效方法（即把akxy - canvas中227行setInterval方法解除注释即可）
+                var canvasSE = document.createElement("canvas");
+                var contextSE = canvasSE.getContext("2d");
+                canvasSE.style.cssText = 'position:absolute;left:0;top:0;';
+                canvasSE.width = parseInt(demoDiv.clientWidth);
+                canvasSE.height = parseInt(demoDiv.clientHeight);
+                canvasSE.style.width = parseInt(demoDiv.clientWidth) + "px";
+                canvasSE.style.height = parseInt(demoDiv.clientHeight) + "px";
+                demoDiv.appendChild(canvasSE);
+
+                setInterval(setChange, 100);
+
+                var r = 1;
+                function setChange() {
+                    akxyCad.setLayer(demoLayer);
+                    var pointsofWarn = akxyCad.getpointsofWarn();
+                    contextSE.clearRect(0, 0, contextSE.canvas.width, contextSE.canvas.height);
+                    for (var i = 0; i < pointsofWarn.length; i++) {
+                        var grad = contextSE.createRadialGradient(pointsofWarn[i].x, pointsofWarn[i].y, 1, pointsofWarn[i].x, pointsofWarn[i].y, r);
+                        grad.addColorStop(0, 'rgba(168,84,93,0)');
+                        grad.addColorStop(0.5, 'rgba(172,55,73,0)');
+                        grad.addColorStop(1, '#ff3333');
+                        contextSE.strokeStyle = 'red';
+                        contextSE.fillStyle = grad;
+                        contextSE.beginPath();
+                        contextSE.arc(pointsofWarn[i].x, pointsofWarn[i].y, r++, 0, 2 * Math.PI);
+                        contextSE.closePath();
+                        contextSE.stroke();
+                        contextSE.fill();
+                    }
+                    r++;
+                    if (r >= 30) {
+                        r = 1;
+                    }
+                }
+            }
+        })
+
+        //随机定位
+        $('#position').click(function (e) {
+            e.preventDefault();
+            var length = stressInfo.length;
+            var i = Math.round(Math.random() * length);
+            akxyCad.setLayer(demoLayer); //设置当前矿图的Layer对象
+            //goTo 是定位方法
+            akxyCad.goTo(1000, { x: (stressInfo[i].X - middleX), y: (stressInfo[i].Y - middleY) }, "images/cross.png");
+        });
+
+        //加载右侧平剖面
+        var planeLayer, profileLayer;
+        var planeIndex = 0, profileIndex = 0, allIndex = 0;
+
+        var divPlane = document.getElementById("CadCanvas");
+        var configPlane = {  //配置config
+            container: divPlane,
+            isTrueCoordinate: true,
+            pointSize: pointSize
+        };
+        akxyCad.config(configPlane); //加载config
+        planeLayer = akxyCad.getLayer(); //获取当前平面的Layer对象（用于在多个div下绘制图形时）
+
+        var divProfile = document.getElementById("CadProfile");
+        var configProfile = {
+            container: divProfile,
+            isTrueCoordinate: false, //是否是真实坐标（平剖面时，鼠标悬停会进行判断）
+            pointSize: pointSize
+        };
+        akxyCad.config(configProfile);
+        profileLayer = akxyCad.getLayer();//获取当前剖面的Layer对象（用于多个div时）
+
+        $.ajax({ //请求矿图信息
+            type: "GET",
+            url: "profile.json",
+            dataType: "json",
+            success: function (data) {
+                akxyCad.setLayer(planeLayer); //设置当前平面的Layer对象
+                akxyCad.clearCad(); //清空div下所有canvas数据
+                akxyCad.loadCad(cadInfo);
+                akxyCad.drawQuake(data.QuakeInfo);
+
+                akxyCad.setLayer(profileLayer);//设置当前剖面的Layer对象
+                akxyCad.clearCad();
+                akxyCad.loadCad(data.Etj);
+                akxyCad.drawQuake(data.QuakeInfo);
+            }
+        })
+        function showPlane() {
+            if (planeIndex == 0) {
+                $("#CadProfile").animate({ 'height': '0' }).hide();
+                $("#CadCanvas").animate({ 'height': '99%' }, '100', function () {
+                    akxyCad.setLayer(planeLayer);
+                    //用于浏览器窗体改变大小时，矿图的自适应方法。
+                    akxyCad.resize(document.getElementById("CadCanvas").clientWidth, document.getElementById("CadCanvas").clientHeight);
+                    akxyCad.moveTo(planeLayer.movetoPoint.x, planeLayer.movetoPoint.y);
+                }).show();
+                planeIndex = 1;
+                profileIndex = 0;
+                allIndex = 0;
+            }
+        }
+
+        function showProfile() {
+            if (profileIndex == 0) {
+                $("#CadCanvas").animate({ 'height': '0' }).hide(1);
+                $("#CadProfile").animate({ 'height': '99%', 'margin-top': '0em' }, '100', function () {
+                    akxyCad.setLayer(profileLayer);
+                    akxyCad.resize(document.getElementById("CadProfile").clientWidth, document.getElementById("CadProfile").clientHeight);
+                    akxyCad.moveTo(profileLayer.movetoPoint.x, profileLayer.movetoPoint.y);
+                }).show();
+                planeIndex = 0;
+                profileIndex = 1;
+                allIndex = 0;
+            }
+        }
+
+        function showAll() {
+            if (allIndex == 0) {
+                $("#CadCanvas").animate({ 'height': '49%' }, '100', function () {
+                    akxyCad.setLayer(planeLayer);
+                    akxyCad.resize(document.getElementById("CadCanvas").clientWidth, document.getElementById("CadCanvas").clientHeight);
+                    akxyCad.moveTo(planeLayer.movetoPoint.x, planeLayer.movetoPoint.y);
+                }).show();
+
+                $("#CadProfile").animate({ 'height': '48%', 'margin-top': '1em' }, '100', function () {
+                    akxyCad.setLayer(profileLayer);
+                    akxyCad.resize(document.getElementById("CadProfile").clientWidth, document.getElementById("CadProfile").clientHeight);
+                    akxyCad.moveTo(profileLayer.movetoPoint.x, profileLayer.movetoPoint.y);
+                }).show();
+                allIndex = 1;
+                planeIndex = 0;
+                profileIndex = 0;
+            }
+        }
+    </script>
+</body>
+</html>
