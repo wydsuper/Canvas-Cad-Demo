@@ -1,5 +1,5 @@
 ﻿/**
- * @Name: akxy-drawcad V1.0.0  Canvas绘制CAD矿图  
+ * @Name: akxy-drawcad V1.0.0   Canvas绘制CAD矿图  
  * @Author: wyd  http://www.wuyandong.me/
  * @Copyright: 2018 AKXY 
  */
