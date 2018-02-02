@@ -682,7 +682,7 @@
         drawVector: function (vector) {
             var style;
             if (!vector.style) {
-                style = new CanvasSketch.defaultStyle();
+                style = new Util.defaultStyle();
             } else {
                 style = vector.style;
             }
@@ -736,6 +736,8 @@
             var x = pt.x * (100 / zoom) + layer.bounds.left + layer.middleXY.x;
             var y = layer.bounds.top - pt.y * (100 / zoom) + layer.middleXY.y;
             var spanx = document.getElementById("spanx");
+            if (spanx == null)
+                return;
             var spany = document.getElementById("spany");
             spanx.innerHTML = "X = " + x.toFixed(1);
             spany.innerHTML = "Y = " + y.toFixed(1);
@@ -1716,6 +1718,7 @@
     exports.Bounds = Bounds;
     exports.Text = Text;
     exports.Circle = Circle;
+    exports.Rect = Rect;
 })));
 
 
