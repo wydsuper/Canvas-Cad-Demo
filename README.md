@@ -3,5 +3,5 @@
 <br/>
 <br/>
 Link to the Site : https://wydsuper.github.io/Canvas-Cad-Demo/Demo.html
-<br/>
-<br/>Blog : http://www.wuyandong.me/
+
+
